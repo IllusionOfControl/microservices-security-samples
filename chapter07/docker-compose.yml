@@ -1,0 +1,41 @@
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  sts:
+    build: ./sample01/
+    container_name: mss-ch07-sample01
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.token.rule=PathPrefix(`/oauth`) || PathPrefix(`/login`)"
+      - "traefik.http.routers.token.entrypoints=web"
+      - "traefik.http.services.token.loadbalancer.server.port=8080"
+
+  order-service:
+    build: ./sample02/
+    container_name: mss-ch07-sample02
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.orders.rule=PathPrefix(`/orders`)"
+      - "traefik.http.routers.orders.entrypoints=web"
+      - "traefik.http.services.orders.loadbalancer.server.port=8080"
+
+  inventory-service:
+    build: ./sample03/
+    container_name: mss-ch07-sample03
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inventory.rule=PathPrefix(`/inventory`)"
+      - "traefik.http.routers.inventory.entrypoints=web"
+      - "traefik.http.services.inventory.loadbalancer.server.port=8080"
