@@ -7,7 +7,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
-      - "--serverstransports.insecureSkipVerify=true"
+      - "--serverstransport.insecureSkipVerify=true"
     ports:
       - "80:80"
       - "8081:8081"
