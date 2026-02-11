@@ -11,6 +11,8 @@ FROM openjdk:11.0.8-jre-slim
 WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
+COPY keystore.jks .
+COPY trust-store.jks .
 
 EXPOSE 8443
 
